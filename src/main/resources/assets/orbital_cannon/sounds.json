@@ -1,0 +1,10 @@
+{
+    "cannon_charge": {
+        "subtitle": "subtitles.orbital_cannon.cannon_charge",
+        "sounds": ["orbital_cannon:cannon_charge"]
+    },
+    "cannon_fire": {
+        "subtitle": "subtitles.orbital_cannon.cannon_fire",
+        "sounds": ["orbital_cannon:cannon_fire"]
+    }
+}

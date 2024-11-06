@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "iRi",
+        "iii"
+    ],
+    "key": {
+        "#": {
+            "item": "orbital_cannon:attuned_crystal"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        }
+    },
+    "result": {
+        "id": "orbital_cannon:cannon_remote",
+        "count": 1
+    }
+}

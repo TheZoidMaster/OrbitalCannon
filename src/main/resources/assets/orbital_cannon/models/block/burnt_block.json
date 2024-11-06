@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "orbital_cannon:block/burnt_block"
+    }
+}

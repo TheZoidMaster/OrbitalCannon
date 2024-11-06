@@ -1,0 +1,12 @@
+{
+    "item.orbital_cannon.attuned_crystal": "Attuned Crystal",
+    "item.orbital_cannon.cannon_remote": "Cannon Remote",
+
+    "subtitles.orbital_cannon.cannon_charge": "Orbital Cannon charging",
+    "subtitles.orbital_cannon.cannon_fire": "Orbital Cannon firing",
+
+    "death.attack.obliteration": "%1$s got absolutely fucking obliterated",
+
+    "block.orbital_cannon.debris": "Debris",
+    "block.orbital_cannon.burnt_block": "Burnt Block"
+}
