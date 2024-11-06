@@ -9,6 +9,9 @@ import zoid.orbital_cannon.damage_types.ModDamageTypes;
 import zoid.orbital_cannon.items.ModItems;
 import zoid.orbital_cannon.sounds.ModSounds;
 import zoid.orbital_cannon.util.EventScheduler;
+import zoid.orbital_cannon.util.RenderEvents;
+import zoid.orbital_cannon.util.RenderEvents.DeltaRunnable;
+import zoid.orbital_cannon.util.camera.CameraShakeHandlerSingleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,14 @@ public class OrbitalCannon implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.warn("KABOOM");
+
+		CameraShakeHandlerSingleton.initialize();
+
+		RenderEvents renderEvents = new RenderEvents();
+		RenderEvents.addEvent(
+				renderEvents.new RenderEvent("CameraShake",
+						(DeltaRunnable) (delta) -> CameraShakeHandlerSingleton.getInstance().update(delta)));
+
 		ServerTickEvents.START_SERVER_TICK.register((server) -> EventScheduler.update());
 
 		ReloadListenerRegistry.register(ResourceType.CLIENT_RESOURCES, new EffekAssetLoader(),

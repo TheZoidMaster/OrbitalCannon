@@ -19,6 +19,8 @@ import zoid.orbital_cannon.OrbitalCannon;
 import zoid.orbital_cannon.sounds.ModSounds;
 import zoid.orbital_cannon.util.EventScheduler;
 import zoid.orbital_cannon.util.ExplosionHandler;
+import zoid.orbital_cannon.util.camera.CameraShakeEvent;
+import zoid.orbital_cannon.util.camera.CameraShakeHandlerSingleton;
 
 public class CannonRemoteItem extends Item {
     public CannonRemoteItem(Settings settings) {
@@ -40,29 +42,44 @@ public class CannonRemoteItem extends Item {
             }
 
             if (!world.isClient()) {
-                world.getEntitiesByClass(PlayerEntity.class, user.getBoundingBox().expand(10.0), entity -> true)
+                world.getEntitiesByClass(PlayerEntity.class,
+                        user.getBoundingBox().expand(10.0), entity -> true)
                         .forEach(entity -> {
-                            world.playSound(null, entity.getBlockPos(), ModSounds.CANNON_CHARGE, SoundCategory.PLAYERS,
+                            world.playSound(null, entity.getBlockPos(), ModSounds.CANNON_CHARGE,
+                                    SoundCategory.PLAYERS,
                                     1.0F,
                                     1.0F);
                         });
             }
 
+            CameraShakeHandlerSingleton.getInstance()
+                    .addEvent(new CameraShakeEvent(0.1f, 0f, "CannonCharge"));
+
             EventScheduler.schedule(() -> {
-                world.getEntitiesByClass(PlayerEntity.class, user.getBoundingBox().expand(10.0), entity -> true)
-                        .forEach(entity -> {
-                            world.playSound(null, entity.getBlockPos(), ModSounds.CANNON_FIRE, SoundCategory.PLAYERS,
-                                    2.0F,
-                                    1.0F);
-                        });
+                if (!world.isClient()) {
+                    world.getEntitiesByClass(PlayerEntity.class,
+                            user.getBoundingBox().expand(10.0), entity -> true)
+                            .forEach(entity -> {
+                                world.playSound(null, entity.getBlockPos(), ModSounds.CANNON_FIRE,
+                                        SoundCategory.PLAYERS,
+                                        2.0F,
+                                        1.0F);
+                            });
+
+                }
+                AAALevel.addParticle(world, false,
+                        LASER.clone().position(pos.getX() + 0.5d, pos.getY() + 1.0d, pos.getZ() +
+                                0.5d)
+                                .rotation(new Vec2f(0.0f, (float) (Math.random() * 360.0))));
             }, 6000, "CannonRemoteItem");
 
             EventScheduler.schedule(() -> {
-                AAALevel.addParticle(world, false,
-                        LASER.clone().position(pos.getX() + 0.5d, pos.getY() + 1.0d, pos.getZ() + 0.5d)
-                                .rotation(new Vec2f(0.0f, (float) (Math.random() * 360.0))));
                 ExplosionHandler explosionHandler = new ExplosionHandler(16, world);
                 explosionHandler.explode(pos);
+                CameraShakeHandlerSingleton.getInstance()
+                        .removeEvent("CannonCharge");
+                CameraShakeHandlerSingleton.getInstance()
+                        .addEvent(new CameraShakeEvent(0.5f, -0.1f, "Explosion"));
             }, 6500, "CannonRemoteItem");
         }
 
