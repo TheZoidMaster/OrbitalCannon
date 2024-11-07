@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.Camera;
-import zoid.orbital_cannon.OrbitalCannon;
 import zoid.orbital_cannon.util.RenderEvents;
 import zoid.orbital_cannon.util.camera.CameraShakeHandlerSingleton;
 

@@ -52,9 +52,6 @@ public class CannonRemoteItem extends Item {
                         });
             }
 
-            CameraShakeHandlerSingleton.getInstance()
-                    .addEvent(new CameraShakeEvent(0.1f, 0f, "CannonCharge"));
-
             EventScheduler.schedule(() -> {
                 if (!world.isClient()) {
                     world.getEntitiesByClass(PlayerEntity.class,
@@ -76,8 +73,6 @@ public class CannonRemoteItem extends Item {
             EventScheduler.schedule(() -> {
                 ExplosionHandler explosionHandler = new ExplosionHandler(16, world);
                 explosionHandler.explode(pos);
-                CameraShakeHandlerSingleton.getInstance()
-                        .removeEvent("CannonCharge");
                 CameraShakeHandlerSingleton.getInstance()
                         .addEvent(new CameraShakeEvent(0.5f, -0.1f, "Explosion"));
             }, 6500, "CannonRemoteItem");
