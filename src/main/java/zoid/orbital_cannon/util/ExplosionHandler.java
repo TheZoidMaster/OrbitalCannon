@@ -75,13 +75,13 @@ public class ExplosionHandler {
                                 Math.random() < 0.1) {
                             world.setBlockState(blockPos, ModBlocks.DEBRIS.getDefaultState());
                         }
-                        if (world.getBlockState(blockPos).isSolidBlock(world, blockPos) && Math.random() < 0.1) {
-                            world.setBlockState(blockPos, Blocks.SMOOTH_BASALT.getDefaultState());
-                        }
-                        if (world.getBlockState(blockPos).isSolidBlock(world, blockPos) && Math.random() < 0.1) {
+                        if (world.getBlockState(blockPos).isSolidBlock(world, blockPos)) {
                             world.setBlockState(blockPos, ModBlocks.BURNT_BLOCK.getDefaultState());
                         }
-                        if (world.getBlockState(blockPos).isSolidBlock(world, blockPos) && Math.random() < 0.1) {
+                        if (world.getBlockState(blockPos).isSolidBlock(world, blockPos) && Math.random() < 0.2) {
+                            world.setBlockState(blockPos, Blocks.SMOOTH_BASALT.getDefaultState());
+                        }
+                        if (world.getBlockState(blockPos).isSolidBlock(world, blockPos) && Math.random() < 0.2) {
                             world.setBlockState(blockPos, Blocks.MAGMA_BLOCK.getDefaultState());
                         }
                     }
