@@ -1,5 +1,10 @@
 package zoid.orbital_cannon.items;
 
+import astrinox.stellum.handlers.explosion.ExplosionHandler;
+import astrinox.stellum.handlers.schedule.ScheduleHandler;
+import astrinox.stellum.handlers.schedule.Task;
+import astrinox.stellum.handlers.schedule.TaskType;
+import astrinox.stellum.registry.BurnMapRegistry;
 import mod.chloeprime.aaaparticles.api.common.AAALevel;
 import mod.chloeprime.aaaparticles.api.common.ParticleEmitterInfo;
 import net.minecraft.block.Blocks;
@@ -17,10 +22,6 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.World;
 import zoid.orbital_cannon.OrbitalCannon;
 import zoid.orbital_cannon.sounds.ModSounds;
-import zoid.orbital_cannon.util.EventScheduler;
-import zoid.orbital_cannon.util.ExplosionHandler;
-import zoid.orbital_cannon.util.camera.CameraShakeEvent;
-import zoid.orbital_cannon.util.camera.CameraShakeHandlerSingleton;
 
 public class CannonRemoteItem extends Item {
     public CannonRemoteItem(Settings settings) {
@@ -37,7 +38,7 @@ public class CannonRemoteItem extends Item {
         HitResult hitResult = user.raycast(100.0, 0.0F, false);
         if (hitResult instanceof BlockHitResult) {
             BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
-            if (world.getBlockState(pos).isOf(Blocks.AIR) || world.isSkyVisible(pos)) {
+            if (world.getBlockState(pos).isOf(Blocks.AIR) || !world.isSkyVisible(pos.up())) {
                 return TypedActionResult.fail(itemStack);
             }
 
@@ -52,7 +53,7 @@ public class CannonRemoteItem extends Item {
                         });
             }
 
-            EventScheduler.schedule(() -> {
+            ScheduleHandler.addTask(Identifier.of(OrbitalCannon.MOD_ID, "charge_cannon"), new Task(() -> {
                 if (!world.isClient()) {
                     world.getEntitiesByClass(PlayerEntity.class,
                             user.getBoundingBox().expand(10.0), entity -> true)
@@ -68,14 +69,27 @@ public class CannonRemoteItem extends Item {
                         LASER.clone().position(pos.getX() + 0.5d, pos.getY() + 1.0d, pos.getZ() +
                                 0.5d)
                                 .rotation(new Vec2f(0.0f, (float) (Math.random() * 360.0))));
-            }, 6000, "CannonRemoteItem");
+            }, TaskType.ONCE, 120));
 
-            EventScheduler.schedule(() -> {
-                ExplosionHandler explosionHandler = new ExplosionHandler(16, world);
-                explosionHandler.explode(pos);
-                CameraShakeHandlerSingleton.getInstance()
-                        .addEvent(new CameraShakeEvent(0.5f, -0.1f, "Explosion"));
-            }, 6500, "CannonRemoteItem");
+            ScheduleHandler.addTask(Identifier.of(OrbitalCannon.MOD_ID, "fire_cannon"), new Task(() -> {
+                ExplosionHandler explosionHandler = new ExplosionHandler()
+                        .setPos(pos)
+                        .setBreakBlocks(true)
+                        .setBurnBlocks(true)
+                        .setSize(16)
+                        .setBurnSize(10)
+                        .setNoiseMultiplier(50)
+                        .setNoiseScale(0.3)
+                        .setBurnDoFire(true)
+                        .setDoScreenshake(true)
+                        .setScreenshakeDurationMs(1000)
+                        .setScreenshakeIntensity(1.0f)
+                        .setDoScreenshakeFade(true)
+                        .setBurnMap(BurnMapRegistry.getBurnMap(Identifier.of("stellum", "cannon")))
+                        .setDamage(500)
+                        .setHurtEntities(true);
+                explosionHandler.trigger(world);
+            }, TaskType.ONCE, 127));
         }
 
         ((PlayerEntity) user).getItemCooldownManager().set(this, 300);

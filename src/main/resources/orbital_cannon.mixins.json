@@ -1,9 +1,0 @@
-{
-    "required": true,
-    "package": "zoid.orbital_cannon.mixin",
-    "compatibilityLevel": "JAVA_21",
-    "mixins": ["CameraMixin"],
-    "injectors": {
-        "defaultRequire": 1
-    }
-}

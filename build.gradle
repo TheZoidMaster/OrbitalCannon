@@ -35,6 +35,7 @@ dependencies {
 
 	include modImplementation("maven.modrinth:aaa-particles:${project.particles_version}")
 	include modImplementation("maven.modrinth:architectury-api:${project.architectury_version}")
+    include modImplementation("maven.modrinth:stellum:${project.stellum_version}")
 }
 
 processResources {
